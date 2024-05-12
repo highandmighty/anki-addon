@@ -1,0 +1,2 @@
+cp -rf hebrew_addon.py __init__.py
+zip hebrew_addon.ankiaddon __init__.py hebrew_addon.py aleph.png manifest.json
