@@ -12,11 +12,13 @@ def insert_html_into_editor(editor, html):
 
 
 def flush_niqqud(editor):
+    # Seems that .selectedText() strips any HTML inc. <br>
     selected = editor.web.selectedText()
 
     if selected:
-        chars = [c for c in selected if (1488 <= ord(c) <= 1514) or (ord(c) <= 1000)]
+        chars = [c for c in selected if (1488 <= ord(c) <= 1514) or ord(c) <= 1000 or ord(c) == 1470]
         new_text = "".join(chars)
+        new_text = new_text.replace("\n", "<br>")
 
         insert_html_into_editor(editor, new_text)
 
