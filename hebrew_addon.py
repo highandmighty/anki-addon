@@ -1,5 +1,6 @@
 import json
 import os
+import re
 
 from aqt import gui_hooks
 
@@ -16,7 +17,13 @@ def insert_html_into_editor(editor, html):
 
 
 def strip_niqqud(text):
-    chars = [c for c in text if (1488 <= ord(c) <= 1514) or ord(c) <= 1000 or ord(c) == 1470]
+    def is_allowed(num):
+        return num <= 1000 or \
+            num == 1470 or \
+            1488 <= num <= 1514 or \
+            num == 1524  # ״
+
+    chars = [c for c in text if is_allowed(ord(c))]
     new_text = "".join(chars)
 
     return new_text
@@ -130,3 +137,35 @@ def setup_editor_buttons(buttons, editor):
 
 
 gui_hooks.editor_did_init_buttons.append(setup_editor_buttons)
+
+
+# ---
+# Enclosing numbers in circles
+# ---
+def enclose_numbers(text: str) -> str:
+    circled_numbers = {
+        "(1)": "①",
+        "(2)": "②",
+        "(3)": "③",
+        "(4)": "④",
+        "(5)": "⑤",
+        "(6)": "⑥",
+        "(7)": "⑦",
+        "(8)": "⑧",
+        "(9)": "⑨",
+        "(10)": "⑩"
+    }
+
+    # Function defined as re.sub agrument
+    # See: https://docs.python.org/3/library/re.html#re.sub
+    def replacer(match):
+        return circled_numbers.get(match.group(0), match.group(0))
+
+    return re.sub(r'\(\d{1,2}\)', replacer, text)
+
+
+def on_editor_replace_circles(text: str, editor_instance) -> str:
+    return enclose_numbers(text)
+
+
+gui_hooks.editor_will_munge_html.append(on_editor_replace_circles)
