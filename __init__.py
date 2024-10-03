@@ -130,8 +130,8 @@ def setup_editor_buttons(buttons, editor):
     )
 
     buttons.append(flush_button)
-    buttons.append(root_button)
     buttons.append(transcript_button)
+    buttons.append(root_button)
 
     return buttons
 
