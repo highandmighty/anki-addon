@@ -1,6 +1,8 @@
 import json
 import os
 import re
+from PyQt6.QtWidgets import QApplication
+from PyQt6.QtGui import QClipboard
 
 from aqt import gui_hooks
 
@@ -11,6 +13,11 @@ from aqt.utils import showInfo
 addon_path = os.path.dirname(__file__)
 
 
+def paste_clipboard():
+    clipboard = QApplication.clipboard()
+    return clipboard.text(mode=QClipboard.Mode.Clipboard)
+
+
 def insert_html_into_editor(editor, html):
     js = f"document.execCommand('insertHTML', false, {json.dumps(html)});"  
     editor.web.eval(js)
@@ -18,10 +25,12 @@ def insert_html_into_editor(editor, html):
 
 def strip_niqqud(text):
     def is_allowed(num):
-        return num <= 1000 or \
+        # 59 — semicolon (;)
+        # 1524 — Hebrew quotes (״)
+        return (num <= 1000 and num != 59) or \
             num == 1470 or \
             1488 <= num <= 1514 or \
-            num == 1524  # ״
+            num == 1524
 
     chars = [c for c in text if is_allowed(ord(c))]
     new_text = "".join(chars)
@@ -47,7 +56,7 @@ def change_transcript(editor):
     selected = editor.web.selectedText()
 
     if selected:
-        new_text = selected.replace("е", "э").replace("х", "кх")
+        new_text = selected.replace("е", "э").replace("х", "кх").replace("я", "йа")
         new_text = new_text.replace("\n", "<br>")
 
         insert_html_into_editor(editor, new_text)
@@ -105,6 +114,40 @@ def open_browser(editor):
     browser.onSearchActivated()
 
 
+def paste_hebrew(editor):
+    # List from clipboard could be:
+    # Word, Niqqud, Transcription, Root
+    # Niqqud, Transcription, Root
+    # Word, Niqqud, Transcription
+    # Niqqud, Transcription
+
+    clipboard = paste_clipboard()
+    if not clipboard:
+        showInfo("Clipboard data is not available.")
+        return
+
+    if "{" not in clipboard:
+        showInfo("Clipboard data is incorrect.")
+        return
+
+    clipboard_dict = json.loads(clipboard)
+
+    if "Niqqud" not in clipboard_dict or "Transcription" not in clipboard_dict:
+        showInfo("Clipboard data is incorrect.")
+        return
+
+    allowed_keys = ["Root", "Niqqud", "Transcription", "Word"]
+    fields = {k: v for k, v in clipboard_dict.items() if k in allowed_keys}
+
+    if "Word" not in clipboard_dict:
+        fields['Word'] = strip_niqqud(clipboard_dict["Niqqud"])
+    
+    for field, text in fields.items():
+        if field in editor.note:
+            editor.note[field] = text
+    editor.loadNote()
+
+
 # Adding buttons to interface
 def setup_editor_buttons(buttons, editor):
 
@@ -129,9 +172,17 @@ def setup_editor_buttons(buttons, editor):
         tip="Corrects transcription"
     )
 
+    paste_button = editor.addButton(
+        os.path.join(addon_path, "paste.svg"),
+        "PasteHebrew",
+        paste_hebrew,
+        tip="Pastes Hebrew word from clipboard"
+    )
+
     buttons.append(flush_button)
     buttons.append(transcript_button)
     buttons.append(root_button)
+    buttons.append(paste_button)
 
     return buttons
 
@@ -140,7 +191,7 @@ gui_hooks.editor_did_init_buttons.append(setup_editor_buttons)
 
 
 # ---
-# Enclosing numbers in circles
+# Enclosing numbers in circles and replacing semicolons
 # ---
 def enclose_numbers(text: str) -> str:
     circled_numbers = {
@@ -164,8 +215,19 @@ def enclose_numbers(text: str) -> str:
     return re.sub(r'\(\d{1,2}\)', replacer, text)
 
 
+def span_semicolons(text: str) -> str:
+    # Search Anki: Niqqud:re:<br> -Niqqud:re:;
+    pattern = r'\;<br>'  # (?<!<span>)\;(?!<\/span>)
+    return re.sub(pattern, '<span>;</span><br>', text)
+
+
 def on_editor_replace_circles(text: str, editor_instance) -> str:
     return enclose_numbers(text)
 
 
+def on_editor_replace_semicolons(text: str, editor_instance) -> str:
+    return span_semicolons(text)
+
+
 gui_hooks.editor_will_munge_html.append(on_editor_replace_circles)
+gui_hooks.editor_will_munge_html.append(on_editor_replace_semicolons)
