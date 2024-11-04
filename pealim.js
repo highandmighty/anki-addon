@@ -2,7 +2,8 @@ const noun_ids = ["s", "p", "sc", "pc"];
 const verb_ids = [
 	"INF-L", "AP-ms", "AP-fs", "AP-mp",
 	"PERF-1s", "PERF-1p", "PERF-2ms", "PERF-2fs", "PERF-2mp",
-	"PERF-3ms", "PERF-3fs", "PERF-3p"
+	"PERF-3ms", "PERF-3fs", "PERF-3p",
+	"IMPF-1s", "IMPF-2ms", "IMPF-3mp"
 	];
 const adj_ids = ["ms-a", "fs-a", "mp-a", "fp-a"];
 const data_w = {};
@@ -50,6 +51,7 @@ function findRoot() {
 	for (const par of pars) {
 		if (par.textContent.includes("Корень")) {
 			root = par.querySelector("a")?.textContent.replaceAll(" ", "") || undefined;
+			break;
 		}
 	}
 	console.log(`Root: ${root}`);
@@ -80,7 +82,11 @@ function parseIDs(ids) {
 
 // Pattern for nouns
 function patternNoun({ s, p, sc, pc }) {
-    return `${s}${p ? ` (${p})` : ''}${sc ? (pc ? `, ${sc} (${pc})` : `, ${sc}`) : ''}`;
+	if (s) {
+		return `${s}${p ? ` (${p})` : ''}${sc ? (pc ? `, ${sc} (${pc})` : `, ${sc}`) : ''}`;
+	} else if (p) {
+		return `${p}${pc ? `, ${pc}` : ''}`;
+	}
 }
 
 // Pattern for adjectives
@@ -89,12 +95,12 @@ function patternAdj(objects) {
 }
 
 // Pattern for verbs
-function patternVerb(objects) {
+function patternVerb(objects, sep="") {
 	// Grammar version
-	// return `${objects['PERF-1s']} / ${objects['PERF-1p']};<br/>${objects['PERF-2ms']}, ${objects['PERF-2fs']} / ${objects['PERF-2mp']};<br/>${objects['PERF-3ms']}, ${objects['PERF-3fs']} / ${objects['PERF-3p']};<br/>${objects['INF-L']}`
+	// return `${objects['PERF-1s']} / ${objects['PERF-1p']}${sep}<br/>${objects['PERF-2ms']}, ${objects['PERF-2fs']} / ${objects['PERF-2mp']}${sep}<br/>${objects['PERF-3ms']}, ${objects['PERF-3fs']} / ${objects['PERF-3p']}${sep}<br/>${objects['INF-L']}`
 
 	// Regular version
-	return `${objects['AP-ms']} / ${objects['AP-fs']} / ${objects['AP-mp']} / ${objects['INF-L']};<br/>${objects['PERF-1s']} / ${objects['PERF-3ms']} / ${objects['PERF-3fs']}`;
+	return `${objects['AP-ms']} / ${objects['AP-fs']} / ${objects['AP-mp']} / ${objects['INF-L']}${sep}<br/>${objects['PERF-1s']} / ${objects['PERF-3ms']} / ${objects['PERF-3fs']}${sep}<br/>${objects['IMPF-1s']} / ${objects['IMPF-2ms']} / ${objects['IMPF-3mp']}`;
 }
 
 // Main function
@@ -139,7 +145,7 @@ function pealim() {
 		// VERBS
 		parseIDs(verb_ids);
 
-		var text_w = patternVerb(data_w);
+		var text_w = patternVerb(data_w, sep=";");
 		var text_tr = patternVerb(data_tr);
 		var text_wr = patternVerb(data_wr);
 	}
