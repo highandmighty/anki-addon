@@ -1,9 +1,13 @@
+// 'past' or 'future' or empty
+var VERB_PATTERN = "reg";
+
 const noun_ids = ["s", "p", "sc", "pc"];
 const verb_ids = [
 	"INF-L", "AP-ms", "AP-fs", "AP-mp",
 	"PERF-1s", "PERF-1p", "PERF-2ms", "PERF-2fs", "PERF-2mp",
 	"PERF-3ms", "PERF-3fs", "PERF-3p",
-	"IMPF-1s", "IMPF-2ms", "IMPF-3mp"
+	"IMPF-1s", "IMPF-1p", "IMPF-2ms", "IMPF-2fs", "IMPF-2mp",
+	"IMPF-3ms", "IMPF-3fs", "IMPF-3mp"
 	];
 const adj_ids = ["ms-a", "fs-a", "mp-a", "fp-a"];
 const data_w = {};
@@ -96,11 +100,17 @@ function patternAdj(objects) {
 
 // Pattern for verbs
 function patternVerb(objects, sep="") {
-	// Grammar version
-	// return `${objects['PERF-1s']} / ${objects['PERF-1p']}${sep}<br/>${objects['PERF-2ms']}, ${objects['PERF-2fs']} / ${objects['PERF-2mp']}${sep}<br/>${objects['PERF-3ms']}, ${objects['PERF-3fs']} / ${objects['PERF-3p']}${sep}<br/>${objects['INF-L']}`
-
-	// Regular version
-	return `${objects['AP-ms']} / ${objects['AP-fs']} / ${objects['AP-mp']} / ${objects['INF-L']}${sep}<br/>${objects['PERF-1s']} / ${objects['PERF-3ms']} / ${objects['PERF-3fs']}${sep}<br/>${objects['IMPF-1s']} / ${objects['IMPF-2ms']} / ${objects['IMPF-3mp']}`;
+	
+	if (typeof VERB_PATTERN !== 'undefined' && VERB_PATTERN === "past") {
+		// Grammar version: Past tense
+		return `${objects['PERF-1s']} / ${objects['PERF-1p']}${sep}<br/>${objects['PERF-2ms']}, ${objects['PERF-2fs']} / ${objects['PERF-2mp']}${sep}<br/>${objects['PERF-3ms']}, ${objects['PERF-3fs']} / ${objects['PERF-3p']}${sep}<br/>${objects['INF-L']}`
+	} else if (typeof VERB_PATTERN !== 'undefined' && VERB_PATTERN === "future") {
+		// Grammar version: Future tense
+		return `${objects['IMPF-1s']} / ${objects['IMPF-1p']}${sep}<br/>${objects['IMPF-2ms']}, ${objects['IMPF-2fs']} / ${objects['IMPF-2mp']}${sep}<br/>הוא ${objects['IMPF-3ms']}, היא ${objects['IMPF-3fs']} / הם ${objects['IMPF-3mp']}${sep}<br/>${objects['INF-L']}`
+	} else {
+		// Regular version
+		return `${objects['AP-ms']} / ${objects['AP-fs']} / ${objects['AP-mp']} / ${objects['INF-L']}${sep}<br/>${objects['PERF-1s']} / ${objects['PERF-3ms']} / ${objects['PERF-3fs']}${sep}<br/>${objects['IMPF-1s']} / ${objects['IMPF-2ms']} / ${objects['IMPF-3mp']}`;
+	}
 }
 
 // Main function
@@ -114,20 +124,19 @@ function pealim() {
 		// NOUNS
 		parseIDs(noun_ids);
 
-		if ('sc' in data_w && 'pc' in data_w) {
-			if (data_tr['s'] == data_tr['sc'].replace("-", "")) {
-				if (data_w['s'] === data_w['sc'].replace("־", "")) {
-					[data_w, data_tr, data_wr].forEach(el => el["sc"] = "~");
-				} else {
-					data_tr['sc'] = "~";
-				}
+		if ('sc' in data_w && data_tr['s'] == data_tr['sc'].replace("-", "")) {
+			if (data_w['s'] === data_w['sc'].replace("־", "")) {
+				[data_w, data_tr, data_wr].forEach(el => el["sc"] = "~");
+			} else {
+				data_tr['sc'] = "~";
 			}
-			if (data_tr['p'] == data_tr['pc'].replace("-", "")) {
-				if (data_w['p'] === data_w['pc'].replace("־", "")) {
-					[data_w, data_tr, data_wr].forEach(el => el["pc"] = "~");
-				} else {
-					data_tr['pc'] = "~";
-				}
+		}
+		
+		if ('pc' in data_w && data_tr['p'] == data_tr['pc'].replace("-", "")) {
+			if (data_w['p'] === data_w['pc'].replace("־", "")) {
+				[data_w, data_tr, data_wr].forEach(el => el["pc"] = "~");
+			} else {
+				data_tr['pc'] = "~";
 			}
 		}
 
