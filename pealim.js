@@ -1,5 +1,7 @@
 // 'past' or 'future' or empty
 var VERB_PATTERN = "reg";
+// ' /' for Android or ',' for iPhone
+var DELIMETER = " /";
 
 const noun_ids = ["s", "p", "sc", "pc"];
 const verb_ids = [
@@ -95,7 +97,7 @@ function patternNoun({ s, p, sc, pc }) {
 
 // Pattern for adjectives
 function patternAdj(objects) {
-    return `${objects['ms-a']} / ${objects['fs-a']} / ${objects['mp-a']}`;
+    return `${objects['ms-a']}${DELIMETER} ${objects['fs-a']}${DELIMETER} ${objects['mp-a']}`;
 }
 
 // Pattern for verbs
@@ -103,13 +105,13 @@ function patternVerb(objects, sep="") {
 	
 	if (typeof VERB_PATTERN !== 'undefined' && VERB_PATTERN === "past") {
 		// Grammar version: Past tense
-		return `${objects['PERF-1s']} / ${objects['PERF-1p']}${sep}<br/>${objects['PERF-2ms']}, ${objects['PERF-2fs']} / ${objects['PERF-2mp']}${sep}<br/>${objects['PERF-3ms']}, ${objects['PERF-3fs']} / ${objects['PERF-3p']}${sep}<br/>${objects['INF-L']}`
+		return `${objects['PERF-1s']}${DELIMETER} ${objects['PERF-1p']}${sep}<br/>${objects['PERF-2ms']}, ${objects['PERF-2fs']}${DELIMETER} ${objects['PERF-2mp']}${sep}<br/>${objects['PERF-3ms']}, ${objects['PERF-3fs']}${DELIMETER} ${objects['PERF-3p']}${sep}<br/>${objects['INF-L']}`
 	} else if (typeof VERB_PATTERN !== 'undefined' && VERB_PATTERN === "future") {
 		// Grammar version: Future tense
-		return `${objects['IMPF-1s']} / ${objects['IMPF-1p']}${sep}<br/>${objects['IMPF-2ms']}, ${objects['IMPF-2fs']} / ${objects['IMPF-2mp']}${sep}<br/>הוא ${objects['IMPF-3ms']}, היא ${objects['IMPF-3fs']} / הם ${objects['IMPF-3mp']}${sep}<br/>${objects['INF-L']}`
+		return `${objects['IMPF-1s']}${DELIMETER} ${objects['IMPF-1p']}${sep}<br/>${objects['IMPF-2ms']}, ${objects['IMPF-2fs']}${DELIMETER} ${objects['IMPF-2mp']}${sep}<br/>הוא ${objects['IMPF-3ms']}, היא ${objects['IMPF-3fs']}${DELIMETER} הם ${objects['IMPF-3mp']}${sep}<br/>${objects['INF-L']}`
 	} else {
 		// Regular version
-		return `${objects['AP-ms']} / ${objects['AP-fs']} / ${objects['AP-mp']} / ${objects['INF-L']}${sep}<br/>${objects['PERF-1s']} / ${objects['PERF-3ms']} / ${objects['PERF-3fs']}${sep}<br/>${objects['IMPF-1s']} / ${objects['IMPF-2ms']} / ${objects['IMPF-3mp']}`;
+		return `${objects['AP-ms']}${DELIMETER} ${objects['AP-fs']}${DELIMETER} ${objects['AP-mp']}${DELIMETER} ${objects['INF-L']}${sep}<br/>${objects['PERF-1s']}${DELIMETER} ${objects['PERF-3ms']}${DELIMETER} ${objects['PERF-3fs']}${sep}<br/>${objects['IMPF-1s']}${DELIMETER} ${objects['IMPF-2ms']}${DELIMETER} ${objects['IMPF-3mp']}`;
 	}
 }
 
