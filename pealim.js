@@ -17,7 +17,7 @@ const data_tr = {};
 const data_wr = {};
 
 function myTr(text) {
-  return text.replaceAll("е", "э").replaceAll("х", "кх").replaceAll("я", "йа");
+  return text.replaceAll("е", "э").replaceAll("х", "кх").replaceAll("я", "йа").replaceAll("ю", "йу");
 }
 
 function stripNiqqud(text) {
