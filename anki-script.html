@@ -1,0 +1,26 @@
+<script>
+    // This function is not needed on AnkiDroid
+    // But I didn't test it on iOS
+    // function getAnkiPrefix() {
+    //     return globalThis.ankiPlatform === "desktop"
+    //         ? ""
+    //         : globalThis.AnkiDroidJS
+    //         ? "https://appassets.androidplatform.net"
+    //         : ".";
+    // }
+    // script.src = `${getAnkiPrefix()}/_anki-script.js`;
+    
+    const script = document.createElement('script');
+    script.src = "/_anki-script.js";
+    script.async = false;
+    script.onload = () => {
+        const f = () => update_niqqud(
+            String.raw`{{Niqqud}}`, String.raw`{{Word}}`, "replace"
+        );
+        // const f = () => test_function("replace");
+        document.readyState === 'loading'
+            ? document.addEventListener('DOMContentLoaded', f)
+            : f();
+    };
+    document.head.appendChild(script);
+</script>
