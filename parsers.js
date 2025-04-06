@@ -19,22 +19,38 @@ function hebrewAcademyParser() {
 
 function milogParser() {
     var html = document.getSelection().getRangeAt(0).cloneContents();
-    var paragraphs = html.querySelectorAll('.ent_para');
     var result = '';
+    console.log(html);
     
-    paragraphs.forEach((para, index) => {
+    var allItems = html.querySelectorAll('.ent_para');
+    if (allItems.length === 0) {
+        copyToClipboard(`1. ${html.textContent}`);
+        return;
+    }
+    
+    allItems.forEach((para, index) => {
         var text = para.querySelector('.ent_para_text').textContent.trim();
         result += `${index + 1}. ${text}\n`;
     });
     
-    copyToClipboard(result);
+    copyToClipboard(result.trim());
 }
 
 function wiktionaryParser() {
     var html = document.getSelection().getRangeAt(0).cloneContents();
-    var allItems = html.querySelectorAll('li');
+    // Temp wrapper to target only top level <li> elements
+    var tempContainer = document.createElement('div');
+    tempContainer.id = 'top';
+    tempContainer.appendChild(html);
     var result = '';
     var index = 1;
+    console.log(html);
+    
+    var allItems = tempContainer.querySelectorAll('#top > li');
+    // No <li> on top level means there only one entry
+    if (allItems.length === 0) {
+        allItems = [tempContainer];
+    }
     
     allItems.forEach(function(item) {
         // Skip items that are inside ul (they are examples)
@@ -55,7 +71,7 @@ function wiktionaryParser() {
         index++;
     });
     
-    copyToClipboard(result);
+    copyToClipboard(result.trim());
 }
 
 function copyToClipboard(text) {
