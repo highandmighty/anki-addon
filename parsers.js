@@ -1,5 +1,7 @@
 function ravMilimParser() {
-    var text = window.getSelection().toString();
+    var html = document.getSelection().getRangeAt(0).cloneContents();
+    addBrackets(html, 'span.main font');
+    var text = html.textContent;
     var modified = text.trim().replace(/•\s/g, "    - ");
     copyToClipboard(modified);
 }
@@ -36,6 +38,24 @@ function milogParser() {
     copyToClipboard(result.trim());
 }
 
+function addBrackets(element, selector) {
+    element.querySelectorAll(selector).forEach(elem => {
+        const newFrag = document.createRange()
+            .createContextualFragment(`(${elem.innerHTML})`);
+        elem.parentNode.replaceChild(newFrag, elem);
+    });
+
+    // element.querySelectorAll(selector).forEach(span => {
+    //     const frag = document.createDocumentFragment();
+    //     frag.append('(');
+    //     while (span.firstChild) {
+    //         frag.append(span.firstChild);
+    //     }
+    //     frag.append(')');
+    //     span.replaceWith(frag);
+    // });
+}
+
 function wiktionaryParser() {
     var html = document.getSelection().getRangeAt(0).cloneContents();
     // Temp wrapper to target only top level <li> elements
@@ -58,6 +78,7 @@ function wiktionaryParser() {
         
         // Get main text by removing the nested ul
         var text = item.cloneNode(true);
+        addBrackets(text, 'span[typeof="mw:Transclusion"]');
         var nestedList = text.querySelector('ul');
         if (nestedList) nestedList.remove();
         result += index + '. ' + text.textContent.trim() + '\n';
