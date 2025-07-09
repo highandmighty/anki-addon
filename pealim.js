@@ -111,7 +111,7 @@ function patternVerb(objects, sep="") {
 		return `${objects['IMPF-1s']}${DELIMETER} ${objects['IMPF-1p']}${sep}<br/>${objects['IMPF-2ms']}, ${objects['IMPF-2fs']}${DELIMETER} ${objects['IMPF-2mp']}${sep}<br/>הוא ${objects['IMPF-3ms']}, היא ${objects['IMPF-3fs']}${DELIMETER} הם ${objects['IMPF-3mp']}${sep}<br/>${objects['INF-L']}`
 	} else {
 		// Regular version
-		return `${objects['AP-ms']}${DELIMETER} ${objects['AP-fs']}${DELIMETER} ${objects['AP-mp']}${DELIMETER} ${objects['INF-L']}${sep}<br/>${objects['PERF-1s']}${DELIMETER} ${objects['PERF-3ms']}${DELIMETER} ${objects['PERF-3fs']}${sep}<br/>${objects['IMPF-1s']}${DELIMETER} ${objects['IMPF-2ms']}${DELIMETER} ${objects['IMPF-3mp']}`;
+		return `${objects['AP-ms']}${DELIMETER} ${objects['AP-fs']}${DELIMETER} ${objects['AP-mp']}${DELIMETER} ${objects['INF-L']}${sep}<br/>${objects['PERF-1s']}${DELIMETER} ${objects['PERF-3ms']}${DELIMETER} ${objects['PERF-3fs']}${sep}<br/>${objects['IMPF-1s']}${DELIMETER} ${objects['IMPF-1p']}${DELIMETER} ${objects['IMPF-2ms']}${DELIMETER} ${objects['IMPF-3mp']}`;
 	}
 }
 

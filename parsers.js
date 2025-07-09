@@ -34,8 +34,11 @@ function milogParser() {
         var text = para.querySelector('.ent_para_text').textContent.trim();
         result += `${index + 1}. ${text}\n`;
     });
+
+    // Dettaching examples
+    result = result.trim().replace(/\s"([^"]+)"/g, '\n    - $1');
     
-    copyToClipboard(result.trim());
+    copyToClipboard(result);
 }
 
 function addBrackets(element, selector) {
