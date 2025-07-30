@@ -3,7 +3,7 @@
     "name": "Hebrew Add-on",
     "modulenam": "hebrew_addon",
     "author": "@highandmighty",
-    "version": "0.1.2",
+    "version": "0.1.3",
     "min_point_version": 45,
     "description": "This add-on adds some useful functions for Hebrew learners."
 }

@@ -158,12 +158,20 @@ def setup_editor_buttons(buttons, editor):
         tip="Removes niqquds from selected text"
     )
 
+    flush_button = flush_button.replace(
+        'class="',
+        'style="border-top-right-radius: 0; border-bottom-right-radius: 0;" class="')
+
     root_button = editor.addButton(
         os.path.join(addon_path, "search.svg"),
         "Search Root",
         open_browser,
         tip="Searches for Root in current deck"
     )
+
+    root_button = root_button.replace(
+        'class="',
+        'style="border-radius: 0;" class="')
 
     transcript_button = editor.addButton(
         os.path.join(addon_path, "correct.svg"),
@@ -172,12 +180,20 @@ def setup_editor_buttons(buttons, editor):
         tip="Corrects transcription"
     )
 
+    transcript_button = transcript_button.replace(
+        'class="',
+        'style="border-radius: 0;" class="')
+
     paste_button = editor.addButton(
         os.path.join(addon_path, "paste.svg"),
         "PasteHebrew",
         paste_hebrew,
         tip="Pastes Hebrew word from clipboard"
     )
+
+    paste_button = paste_button.replace(
+        'class="',
+        'style="margin-right: 0.3rem; border-top-left-radius: 0; border-bottom-left-radius: 0;" class="')
 
     buttons.append(flush_button)
     buttons.append(transcript_button)
