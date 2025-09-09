@@ -32,10 +32,11 @@
 
     const fieldRow = (label, value, rtl=false, format='text') => {
       const icon = format === 'html' ? htmlIcon : copyIcon;
+      const iconLabel = format === 'html' ? 'Copy HTML' : 'Copy text';
       return `
       <tr>
         <td>
-          <button type="button" class="copy-btn" title="Copy" data-format="${format}">
+          <button type="button" class="copy-btn" title="${iconLabel}" data-format="${format}" data-label="${label}">
             <b>${label}</b>
             ${icon}
           </button>
@@ -102,11 +103,16 @@
       $('#anki tbody').on('click', '.copy-btn', function () {
         const valueCell = $(this).closest('tr').find('td').eq(1)[0];
         const format = this.dataset.format === 'html' ? 'html' : 'text';
+        const fieldname = this.dataset.label;
+        const replaceFields = ["Word", "Niqqud"];
         let text;
         if (format === 'html') {
           text = (valueCell?.innerHTML || '').trim();
         } else {
           text = (valueCell?.innerText || '').trim();
+        }
+        if (replaceFields.includes(fieldname)) {
+          text = text.replaceAll(" /", ",");
         }
         navigator.clipboard.writeText(text).then(() => {
           this.classList.add('copied');
