@@ -1,29 +1,24 @@
 import sqlite3
 import json
-import tempfile
-import os
+# import os
 from pprint import pprint
 import urllib.parse
 
 
 # TODO: backup function doesn't work:(
-def backup_db(anki_path):
-    # print(os.path.exists(anki_path), os.access(anki_path, os.R_OK))
-    # print(repr(urllib.parse.quote(anki_path, safe="/")))
+def backup_db():
+    ANKI_DB = "/Users/noideaatall/Library/Application Support/Anki2/User 1/collection.anki2"
 
-    src = sqlite3.connect(
-        "file:/Users/noideaatall/Library/Application%20Support/Anki2/User%201/collection.anki2?mode=ro",
-        uri=True,
-        timeout=5.0
-    )
-    snap_path = os.path.join(tempfile.gettempdir(), 'anki_snapshot.sqlite')
-    # snap_path = '/Users/noideaatall/_trash/anki_snapshot.sqlite'
-    dst = sqlite3.connect(snap_path)
-    src.backup(dst)  # consistent snapshot even if Anki is writing
-    src.close()
-    dst.close()
+    source_conn = sqlite3.connect(ANKI_DB, timeout=5.0)
+    backup_path = '/Users/noideaatall/_trash/anki_snapshot.sqlite'
+    # Creates backup db if it doesn't exist
+    backup_conn = sqlite3.connect(backup_path)
 
-    return snap_path
+    with source_conn, backup_conn:
+        source_conn.backup(backup_conn)
+
+    print("Backup made successfully")
+    return backup_path
 
 
 def export_anki_json(db_path, out_path):
@@ -66,12 +61,10 @@ AND n.mid NOT IN (1668593573595, 1668593573596)
         json.dump(notes, f, ensure_ascii=False, indent=2)
     
     conn.close()
+    print(f"JSON with {len(data)} entries generated successfully")
 
 
 if __name__ == '__main__':
-    # anki_collection = "/Users/noideaatall/Library/Application Support/Anki2/User 1/collection.anki2"
-    anki_collection = "/Users/noideaatall/_trash/collection.anki2"
-    # anki_copy = backup_db(anki_collection)
-    # print(anki_copy)
-   
-    export_anki_json(anki_collection, "/Users/noideaatall/_temp/anki-addon/docs/anki-table.json")
+    anki_copy = backup_db()
+    anki_json = "/Users/noideaatall/_temp/anki-addon/docs/anki-table.json"
+    export_anki_json(anki_copy, anki_json)
