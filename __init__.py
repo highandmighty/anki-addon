@@ -27,10 +27,12 @@ def strip_niqqud(text):
     def is_allowed(num):
         # 59 — semicolon (;)
         # 1524 — Hebrew quotes (״)
+        # 9312/9321 — ①/⑩
         return (num <= 1000 and num != 59) or \
             num == 1470 or \
             1488 <= num <= 1514 or \
-            num == 1524
+            num == 1524 or \
+            9312 <= num <= 9321
 
     chars = [c for c in text if is_allowed(ord(c))]
     new_text = "".join(chars)
@@ -136,7 +138,9 @@ def paste_hebrew(editor):
         showInfo("Clipboard data is incorrect.")
         return
 
-    allowed_keys = ["Root", "Niqqud", "Transcription", "Word"]
+    allowed_keys = [
+        "Niqqud", "Transcription", "Translation", "Word",
+        "Root", "Root Meaning", "Notes", "Example"]
     fields = {k: v for k, v in clipboard_dict.items() if k in allowed_keys}
 
     if "Word" not in clipboard_dict:
