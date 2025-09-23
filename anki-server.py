@@ -8,4 +8,5 @@ class UTF8Handler(SimpleHTTPRequestHandler):
 
 
 if __name__ == "__main__":
+    print("Open 'http://127.0.0.1:8000/docs/anki-table.html'")
     ThreadingHTTPServer(("127.0.0.1", 8000), UTF8Handler).serve_forever()

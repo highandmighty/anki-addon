@@ -5,7 +5,6 @@ from pprint import pprint
 import urllib.parse
 
 
-# TODO: backup function doesn't work:(
 def backup_db():
     ANKI_DB = "/Users/noideaatall/Library/Application Support/Anki2/User 1/collection.anki2"
 
@@ -17,7 +16,7 @@ def backup_db():
     with source_conn, backup_conn:
         source_conn.backup(backup_conn)
 
-    print("Backup made successfully")
+    print("Backup is made successfully")
     return backup_path
 
 
@@ -65,6 +64,6 @@ AND n.mid NOT IN (1668593573595, 1668593573596)
 
 
 if __name__ == '__main__':
-    anki_copy = backup_db()
+    anki_copy = backup_db()  # Anki should be closed
     anki_json = "/Users/noideaatall/_temp/anki-addon/docs/anki-table.json"
     export_anki_json(anki_copy, anki_json)
