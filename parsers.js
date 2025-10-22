@@ -6,29 +6,51 @@ function ravMilimParser() {
     copyToClipboard(modified);
 }
 
-function ravMilimParser_v2() {
-    var html = document.getSelection().getRangeAt(0).cloneContents();
-    var groups = html.querySelectorAll('[class*="Search_full_analyze_explanation_group"]');
+function processExplanation(explanation) {
     var markdown = '';
+    const definitionDiv = explanation.querySelector('[class*="WordExplain_explain"]');
+    addBrackets(definitionDiv, '[class*="WordExplain_BOLD"]');
+    const numberSpan = explanation.querySelector('span');
     
-    groups.forEach(group => {
-        const explanation = group.querySelector('[class*="Search_full_analyze_explanation"]:not([class*="group"]):not([class*="example"])');
-        if (!explanation) return;
-        
-        const definitionDiv = explanation.querySelector('[class*="WordExplain_explain"]');
-        const numberSpan = explanation.querySelector('span');
-        
-        const number = numberSpan ? numberSpan.textContent.trim() : '';
-        const definition = definitionDiv ? definitionDiv.textContent.trim() : '';
-        
-        markdown += `${number} ${definition}\n`;
-   
-        const examples = group.querySelectorAll('[class*="Search_full_analyze_explanation_example"] li');
-        examples.forEach(example => {
-            markdown += `    - ${example.textContent.trim()}\n`;
-        });
+    const number = numberSpan ? numberSpan.textContent.trim() : '';
+    const definition = definitionDiv ? definitionDiv.textContent.trim() : '';
+    
+    markdown += `${number} ${definition}\n`;
+
+    const examples = explanation.querySelectorAll(
+        '[class*="Search_full_analyze_explanation_example"] li');
+    examples.forEach(example => {
+        markdown += `    - ${example.textContent.trim()}\n`;
     });
+    return markdown;
+}
+
+function ravMilimParser_v2() {
+    var definitionTab = document.querySelector(
+        'button[data-text="הסבר"][class*="Tabs_tab_selected"]');
+    if (!definitionTab) {
+        var selectedText = window.getSelection().toString();
+        copyToClipboard(selectedText);
+        return;
+    }
+
+    var markdown = '';
+    var html = document.getSelection().getRangeAt(0).cloneContents();
+    var groups = html.querySelectorAll(
+        '[class*="Search_full_analyze_explanation_group"]');
+    if (groups.length === 0) {
+        markdown += processExplanation(html);
+    } else {
+        groups.forEach(group => {
+            const explanation = group.querySelector(
+                '[class*="Search_full_analyze_explanation"]:not([class*="group"]):not([class*="example"])');
+            if (!explanation) return;
+            
+            markdown += processExplanation(explanation);
+        });
+    }
     
+    // console.log(markdown.trim());
     copyToClipboard(markdown.trim());
 }
 
