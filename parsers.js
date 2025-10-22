@@ -21,7 +21,7 @@ function ravMilimParser_v2() {
         const number = numberSpan ? numberSpan.textContent.trim() : '';
         const definition = definitionDiv ? definitionDiv.textContent.trim() : '';
         
-        markdown += `${number}${definition}\n`;
+        markdown += `${number} ${definition}\n`;
    
         const examples = group.querySelectorAll('[class*="Search_full_analyze_explanation_example"] li');
         examples.forEach(example => {
