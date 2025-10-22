@@ -106,7 +106,7 @@ function copyToClipboard(text) {
 document.addEventListener('copy', function(event) {
     console.log("copy triggered!");
 
-    if (window.location.hostname === 'www.ravmilim.co.il') {
+    if (window.location.hostname === 'www.ravmilim.com') {
         ravMilimParser();
     } else if (window.location.hostname === 'hebrew-academy.org.il') {
         hebrewAcademyParser();
