@@ -6,6 +6,32 @@ function ravMilimParser() {
     copyToClipboard(modified);
 }
 
+function ravMilimParser_v2() {
+    var html = document.getSelection().getRangeAt(0).cloneContents();
+    var groups = html.querySelectorAll('[class*="Search_full_analyze_explanation_group"]');
+    var markdown = '';
+    
+    groups.forEach(group => {
+        const explanation = group.querySelector('[class*="Search_full_analyze_explanation"]:not([class*="group"]):not([class*="example"])');
+        if (!explanation) return;
+        
+        const definitionDiv = explanation.querySelector('[class*="WordExplain_explain"]');
+        const numberSpan = explanation.querySelector('span');
+        
+        const number = numberSpan ? numberSpan.textContent.trim() : '';
+        const definition = definitionDiv ? definitionDiv.textContent.trim() : '';
+        
+        markdown += `${number}${definition}\n`;
+   
+        const examples = group.querySelectorAll('[class*="Search_full_analyze_explanation_example"] li');
+        examples.forEach(example => {
+            markdown += `    - ${example.textContent.trim()}\n`;
+        });
+    });
+    
+    copyToClipboard(markdown.trim());
+}
+
 function hebrewAcademyParser() {
     var selectedText = window.getSelection().toString();
     
@@ -107,7 +133,7 @@ document.addEventListener('copy', function(event) {
     console.log("copy triggered!");
 
     if (window.location.hostname === 'www.ravmilim.com') {
-        ravMilimParser();
+        ravMilimParser_v2();
     } else if (window.location.hostname === 'hebrew-academy.org.il') {
         hebrewAcademyParser();
     } else if (window.location.hostname === 'milog.co.il') {
