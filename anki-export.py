@@ -44,15 +44,15 @@ AND n.mid NOT IN (1668593573595, 1668593573596)
     # pprint(data)
 
     notes = []
-    x = 1
+    # x = 1
     for nid, flds, tags, notetype, modified in data:
         fields = flds.split("\x1f")
         notes.append(
             {
-                "id": x, "fields": fields,
+                "id": nid, "fields": fields,
                 "tags": tags, "notetype": notetype, "modified": modified
             })
-        x += 1
+        # x += 1
 
     # pprint(notes)
 

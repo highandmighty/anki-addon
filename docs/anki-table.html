@@ -18,6 +18,8 @@
   <script src="./datatables.min.js"></script>
 
   <script>
+    const isAndroid = new URLSearchParams(location.search).get('os') === 'android';
+
     const copyIcon = `
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-copy" viewBox="0 0 16 16">
           <path fill-rule="evenodd" d="M4 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-1h1v1a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h1v1z"/>
@@ -87,20 +89,24 @@
         ]
       });
 
-      // toggle child rows
-      $('#anki tbody').on('click', 'td.details-control', function () {
-        const tr = $(this).closest('tr');
+      // toggle child rows when clicking anywhere on the row
+      $('#anki tbody').on('click', 'tr', function () {
+        const tr = $(this);
+        if (tr.hasClass('dt-child')) return; // ignore clicks on the child row
+
         const row = table.row(tr);
         if (row.child.isShown()) {
           row.child.hide();
           tr.removeClass('shown');
         } else {
-          row.child(format(row.data())).show();
+          row.child(format(row.data()), 'dt-child').show();
           tr.addClass('shown');
         }
       });
 
-      $('#anki tbody').on('click', '.copy-btn', function () {
+
+      $('#anki tbody').on('click', '.copy-btn', function (e) {
+        e.stopPropagation();
         const valueCell = $(this).closest('tr').find('td').eq(1)[0];
         const format = this.dataset.format === 'html' ? 'html' : 'text';
         const fieldname = this.dataset.label;
@@ -111,7 +117,7 @@
         } else {
           text = (valueCell?.innerText || '').trim();
         }
-        if (replaceFields.includes(fieldname)) {
+        if (!isAndroid && replaceFields.includes(fieldname)) {
           text = text.replaceAll(" /", ",");
         }
         navigator.clipboard.writeText(text).then(() => {
