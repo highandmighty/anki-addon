@@ -42,11 +42,12 @@ function ravMilimParser_v2() {
         markdown += processExplanation(html);
     } else {
         groups.forEach(group => {
-            const explanation = group.querySelector(
+            const explanations = group.querySelectorAll(
                 '[class*="Search_full_analyze_explanation"]:not([class*="group"]):not([class*="example"])');
-            if (!explanation) return;
             
-            markdown += processExplanation(explanation);
+            explanations.forEach(explanation => {
+                markdown += processExplanation(explanation);
+            });
         });
     }
     
