@@ -3,6 +3,7 @@ var VERB_PATTERN = "reg";
 // ' /' for Android or ',' for iPhone
 var DELIMETER = " /";
 
+// MINIFY STARTING FROM HERE!
 const noun_ids = ["s", "p", "sc", "pc"];
 const verb_ids = [
 	"INF-L", "AP-ms", "AP-fs", "AP-mp",
@@ -15,6 +16,7 @@ const adj_ids = ["ms-a", "fs-a", "mp-a", "fp-a"];
 const data_w = {};
 const data_tr = {};
 const data_wr = {};
+var pronouns = ["הוא ", "היא ", "הם "];
 
 function myTr(text) {
   return text.replaceAll("е", "э").replaceAll("х", "кх").replaceAll("я", "йа").replaceAll("ю", "йу");
@@ -101,14 +103,15 @@ function patternAdj(objects) {
 }
 
 // Pattern for verbs
-function patternVerb(objects, sep="") {
+function patternVerb(objects, sep="", pron=false) {
 	
 	if (typeof VERB_PATTERN !== 'undefined' && VERB_PATTERN === "past") {
 		// Grammar version: Past tense
 		return `${objects['PERF-1s']}${DELIMETER} ${objects['PERF-1p']}${sep}<br/>${objects['PERF-2ms']}, ${objects['PERF-2fs']}${DELIMETER} ${objects['PERF-2mp']}${sep}<br/>${objects['PERF-3ms']}, ${objects['PERF-3fs']}${DELIMETER} ${objects['PERF-3p']}${sep}<br/>${objects['INF-L']}`
 	} else if (typeof VERB_PATTERN !== 'undefined' && VERB_PATTERN === "future") {
 		// Grammar version: Future tense
-		return `${objects['IMPF-1s']}${DELIMETER} ${objects['IMPF-1p']}${sep}<br/>${objects['IMPF-2ms']}, ${objects['IMPF-2fs']}${DELIMETER} ${objects['IMPF-2mp']}${sep}<br/>הוא ${objects['IMPF-3ms']}, היא ${objects['IMPF-3fs']}${DELIMETER} הם ${objects['IMPF-3mp']}${sep}<br/>${objects['INF-L']}`
+		var pronLocal = pron ? pronouns : ["", "", ""];
+		return `${objects['IMPF-1s']}${DELIMETER} ${objects['IMPF-1p']}${sep}<br/>${objects['IMPF-2ms']}, ${objects['IMPF-2fs']}${DELIMETER} ${objects['IMPF-2mp']}${sep}<br/>${pronLocal[0]}${objects['IMPF-3ms']}, ${pronLocal[1]}${objects['IMPF-3fs']}${DELIMETER} ${pronLocal[2]}${objects['IMPF-3mp']}${sep}<br/>${objects['INF-L']}`
 	} else {
 		// Regular version
 		return `${objects['AP-ms']}${DELIMETER} ${objects['AP-fs']}${DELIMETER} ${objects['AP-mp']}${DELIMETER} ${objects['INF-L']}${sep}<br/>${objects['PERF-1s']}${DELIMETER} ${objects['PERF-3ms']}${DELIMETER} ${objects['PERF-3fs']}${sep}<br/>${objects['IMPF-1s']}${DELIMETER} ${objects['IMPF-1p']}${DELIMETER} ${objects['IMPF-2ms']}${DELIMETER} ${objects['IMPF-3mp']}`;
@@ -156,9 +159,9 @@ function pealim() {
 		// VERBS
 		parseIDs(verb_ids);
 
-		var text_w = patternVerb(data_w, sep=";");
+		var text_w = patternVerb(data_w, ";", true);
 		var text_tr = patternVerb(data_tr);
-		var text_wr = patternVerb(data_wr);
+		var text_wr = patternVerb(data_wr, "", true);
 	}
 
 	console.log(`Text extracted: ${text_w}`);
