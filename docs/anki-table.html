@@ -120,6 +120,13 @@
         if (!isAndroid && replaceFields.includes(fieldname)) {
           text = text.replaceAll(" /", ",");
         }
+        if (!isAndroid && fieldname === "Niqqud") {
+          // Removing `②: ` or `② ` in the beginning of the line
+          text = text.replace(/^(?:[2-9]|10|[②-⑩])(?::)?\s+/gm, '');
+          text = text.replace(/\r?\n/g, '.\n');
+        } else if (isAndroid && fieldname === "Niqqud") {
+          text = text.replace(/\r?\n/g, ';\n');
+        }
         navigator.clipboard.writeText(text).then(() => {
           this.classList.add('copied');
           setTimeout(() => this.classList.remove('copied'), 500);

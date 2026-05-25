@@ -4,11 +4,11 @@ import json
 from pprint import pprint
 import urllib.parse
 
+ANKI_DB = "/Users/noideaatall/Library/Application Support/Anki2/User 1/collection.anki2"
 
-def backup_db():
-    ANKI_DB = "/Users/noideaatall/Library/Application Support/Anki2/User 1/collection.anki2"
 
-    source_conn = sqlite3.connect(ANKI_DB, timeout=5.0)
+def backup_db(db_path):
+    source_conn = sqlite3.connect(db_path, timeout=5.0)
     backup_path = '/Users/noideaatall/_trash/anki_snapshot.sqlite'
     # Creates backup db if it doesn't exist
     backup_conn = sqlite3.connect(backup_path)
@@ -64,6 +64,9 @@ AND n.mid NOT IN (1668593573595, 1668593573596)
 
 
 if __name__ == '__main__':
-    anki_copy = backup_db()  # Anki should be closed
+    # MUM_DB = "/Users/noideaatall/Library/Application Support/Anki2/Mama/collection.anki2"
+    # backup_db(MUM_DB)
+
+    anki_copy = backup_db(ANKI_DB)  # Anki should be closed
     anki_json = "/Users/noideaatall/_temp/anki-addon/docs/anki-table.json"
     export_anki_json(anki_copy, anki_json)
