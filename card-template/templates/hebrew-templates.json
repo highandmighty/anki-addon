@@ -1,0 +1,35 @@
+{
+  "1701892315836": {
+    "notetype": "Hebrew (2 cards: reading + writing)",
+    "css": "styles.css",
+    "templates": {
+      "0": "Hebrew → Translation",
+      "1": "Hebrew → Spelling"
+    }
+  },
+  "1708209058261": {
+    "notetype": "Hebrew (3 cards)",
+    "css": "styles.css",
+    "templates": {
+      "0": "Hebrew → Translation",
+      "1": "Translation → Hebrew",
+      "2": "Hebrew → Spelling"
+    }
+  },
+  "1714466231671": {
+    "notetype": "Hebrew (2 cards: Russian + writing)",
+    "css": "styles.css",
+    "templates": {
+      "0": "Translation → Hebrew",
+      "1": "Hebrew → Spelling"
+    }
+  },
+  "1720443582700": {
+    "notetype": "Hebrew (2 cards: reading + Russian)",
+    "css": "styles.css",
+    "templates": {
+      "0": "Hebrew → Translation",
+      "1": "Translation → Hebrew"
+    }
+  }
+}

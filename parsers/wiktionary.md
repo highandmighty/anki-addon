@@ -6,7 +6,7 @@ When copying definitions from Hebrew Wiktionary, keep ordinary usage examples bu
 
 ## Findings from the saved HTML samples
 
-Both `parsers-wiktionary.html` and `parsers-wiktionary-v2.html` contain three Tanakh quotations. Each quotation's `<li>` contains a MediaWiki transclusion element with:
+Both `tests/wiktionary.html` and `tests/wiktionary-v2.html` contain three Tanakh quotations. Each quotation's `<li>` contains a MediaWiki transclusion element with:
 
 ```html
 <span typeof="mw:Transclusion" data-mw="...">

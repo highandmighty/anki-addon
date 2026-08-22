@@ -1,0 +1,40 @@
+<script>    
+    const script = document.createElement('script');
+    script.src = "/_anki-script2.js";
+    script.async = false;
+    script.onload = () => {
+        const f = () => update_niqqud(String.raw`{{Niqqud}}`, String.raw`{{Word}}`, "replace");
+        // const f = () => test_function("replace");
+        document.readyState === 'loading'
+            ? document.addEventListener('DOMContentLoaded', f)
+            : f();
+    };
+    document.head.appendChild(script);
+</script>
+
+<div class="left">{{Translation}}</div>
+<div class="left small">
+{{#Notes}}
+		<hr>
+    {{Notes}}
+{{/Notes}}
+</div>
+
+<hr id=answer>
+
+<div class="rtl large nospan" id="replace">{{Niqqud}}
+{{#Audio}}
+    {{Audio}}
+{{/Audio}}
+{{^Audio}}
+    {{tts iw_IL voices=com.google.android.tts-he-il-x-hed-local:Niqqud}}
+{{/Audio}}
+</div>
+<div>{{hint:Transcription}}</div>
+{{#Root}}<div class="rtl">{{Root}}: <i>{{Root Meaning}}</i></div>{{/Root}}
+
+{{#Example}}
+<hr>
+<div class="nospan rtl">{{Example}}
+{{tts iw_IL voices=com.google.android.tts-he-il-x-hed-local:Example}}
+{{/Example}}</div>

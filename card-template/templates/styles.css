@@ -1,0 +1,118 @@
+:root {
+  --main-color: blue;
+	--accent-color: GoldenRod;
+}
+
+.card {
+    font-family: Arial, sans-serif;
+    font-size: 20px;
+    text-align: right;
+    color: var(--main-color);
+    background-color: #F8F9F9;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+code {
+	font-family: Arial, sans-serif !important;
+}
+
+.typeGood, .typeMissed, .typeBad {
+	color: inherit;
+}
+
+.typeMissed {
+ background-color: transparent;
+}
+
+.replay-button svg {
+    width: 30px;
+    height: 30px;
+}
+
+.replay-button svg circle {
+    fill: transparent;
+    stroke: unset;
+}
+
+.replay-button svg path {
+	fill: var(--accent-color);
+}
+
+a {
+  color: var(--accent-color);
+	text-decoration: none;
+}
+
+a.hint {
+	text-transform: lowercase;
+	font-size: 16px;
+}
+
+a.replay-button>* {
+	display: none;
+}
+
+a.replay-button::after {
+	content: "( 📣 )";
+	font-size: 20px;
+	line-height: 1;
+	visibility: visible;
+	white-space: nowrap;
+}
+
+a.hint::before {
+	content: "(";
+}
+
+a.hint::after {
+	content: " )";
+}
+
+hr {
+	background-color: transparent;
+	border: none;
+	border-bottom: 1.5px solid var(--main-color) !important;
+	width: 30px;
+	margin-left: auto;
+	margin-right: 0;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.large {
+  font-size: 24px;
+}
+
+.small {
+	font-size: 16px;
+}
+
+.left {
+	text-align: left;
+  direction: ltr;
+}
+
+.marked {
+  color: red;
+}
+
+u {
+  text-underline-offset: 6px;
+  text-decoration-color: var(--main-color);
+  text-decoration-thickness: 4%;
+  text-decoration-style: wavy;
+}
+
+sup {
+	display: none;
+}
+
+.rtl {
+  direction: rtl;
+	font-family: serif;
+}
+
+.nospan span:not([style], .marked) {
+  visibility: hidden;
+}

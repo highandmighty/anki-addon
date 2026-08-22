@@ -156,7 +156,7 @@ def paste_hebrew(editor):
 def setup_editor_buttons(buttons, editor):
 
     flush_button = editor.addButton(
-        os.path.join(addon_path, "aleph.png"),
+        os.path.join(addon_path, "assets", "aleph.png"),
         "FlushNiqqud",
         flush_niqqud,
         tip="Removes niqquds from selected text"
@@ -167,7 +167,7 @@ def setup_editor_buttons(buttons, editor):
         'style="border-top-right-radius: 0; border-bottom-right-radius: 0;" class="')
 
     root_button = editor.addButton(
-        os.path.join(addon_path, "search.svg"),
+        os.path.join(addon_path, "assets", "search.svg"),
         "Search Root",
         open_browser,
         tip="Searches for Root in current deck"
@@ -178,7 +178,7 @@ def setup_editor_buttons(buttons, editor):
         'style="border-radius: 0;" class="')
 
     transcript_button = editor.addButton(
-        os.path.join(addon_path, "correct.svg"),
+        os.path.join(addon_path, "assets", "correct.svg"),
         "ChangeTranscript",
         change_transcript,
         tip="Corrects transcription"
@@ -189,7 +189,7 @@ def setup_editor_buttons(buttons, editor):
         'style="border-radius: 0;" class="')
 
     paste_button = editor.addButton(
-        os.path.join(addon_path, "paste.svg"),
+        os.path.join(addon_path, "assets", "paste.svg"),
         "PasteHebrew",
         paste_hebrew,
         tip="Pastes Hebrew word from clipboard"

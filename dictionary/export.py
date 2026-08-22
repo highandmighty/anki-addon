@@ -68,5 +68,5 @@ if __name__ == '__main__':
     # backup_db(MUM_DB)
 
     anki_copy = backup_db(ANKI_DB)  # Anki should be closed
-    anki_json = "/Users/noideaatall/_temp/anki-addon/docs/anki-table.json"
-    export_anki_json(anki_copy, anki_json)
+    # anki_json = "/Users/noideaatall/_temp/anki-addon/docs/anki-table.json"
+    # export_anki_json(anki_copy, anki_json)
