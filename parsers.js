@@ -56,38 +56,51 @@ function ravMilimParser_v2() {
 }
 
 function hebrewAcademyParser() {
-    var selectedText = window.getSelection().toString();
-    
-    var lines = selectedText.trim().split('\n');
+    var selection = window.getSelection();
+    var selectedElement = selection.anchorNode?.parentElement;
+
+    // Use the parser only when the selection starts in a definition list.
+    if (!selectedElement?.closest('ul.hagdara')) return false;
+
+    var lines = selection.toString().trim().split('\n')
+        .map(line => line.trim())
+        .filter(Boolean);
     var numberedLines = lines.map(function(line, index) {
-        var trimmedLine = line.trim();
-        return index + 1 + '. ' + trimmedLine;
+        return index + 1 + '. ' + line;
     });
     var formattedText = numberedLines.join('\n');
-    
+
     copyToClipboard(formattedText);
+    return true;
 }
 
 function milogParser() {
     var html = document.getSelection().getRangeAt(0).cloneContents();
     var result = '';
     console.log(html);
-    
-    var allItems = html.querySelectorAll('.ent_para');
+
+    var allItems = Array.from(html.querySelectorAll('.ent_para'));
+    // A selection inside one definition may omit the outer .ent_para wrapper.
     if (allItems.length === 0) {
-        copyToClipboard(`1. ${html.textContent}`);
-        return;
+        allItems = [html.querySelector('.ent_para_text') || html];
     }
-    
+
     allItems.forEach((para, index) => {
-        var text = para.querySelector('.ent_para_text').textContent.trim();
-        result += `${index + 1}. ${text}\n`;
+        var textContainer = para.querySelector('.ent_para_text') || para;
+        var text = textContainer.cloneNode(true);
+        var examples = text.querySelectorAll('.ent_example');
+
+        examples.forEach(example => example.remove());
+        result += `${index + 1}. ${text.textContent.trim()}\n`;
+
+        examples.forEach(example => {
+            var exampleText = example.textContent.trim()
+                .replace(/^["“”]|["“”]$/g, '');
+            result += `    - ${exampleText}\n`;
+        });
     });
 
-    // Dettaching examples
-    result = result.trim().replace(/\s"([^"]+)"/g, '\n    - $1');
-    
-    copyToClipboard(result);
+    copyToClipboard(result.trim());
 }
 
 function addBrackets(element, selector) {
@@ -106,6 +119,38 @@ function addBrackets(element, selector) {
     //     frag.append(')');
     //     span.replaceWith(frag);
     // });
+}
+
+const excludedWiktionaryCitationTemplates = new Set([
+    'צט/תנ"ך',
+    'צט/משנה',
+    'צט/תוספתא',
+    'צט/בבלי',
+    'צט/ירושלמי',
+    'צט/ירושלמי הלכה',
+    'צט/רבה'
+]);
+
+function hasExcludedWiktionaryCitationTemplate(example) {
+    var transclusions = example.querySelectorAll(
+        '[typeof~="mw:Transclusion"][data-mw]');
+
+    return Array.from(transclusions).some(function(element) {
+        try {
+            var metadata = JSON.parse(element.getAttribute('data-mw'));
+
+            return metadata.parts.some(function(part) {
+                var templateName = part.template?.target?.wt
+                    ?.replace(/^תבנית:/, '')
+                    .trim();
+
+                return excludedWiktionaryCitationTemplates.has(templateName);
+            });
+        } catch (error) {
+            console.warn('Could not read Wiktionary template metadata:', error);
+            return false;
+        }
+    });
 }
 
 function wiktionaryParser() {
@@ -138,7 +183,10 @@ function wiktionaryParser() {
         // Get examples from nested ul
         var examples = item.querySelectorAll('ul > li');
         examples.forEach(function(example) {
-            result += '    - ' + example.textContent.trim() + '\n';
+            if (hasExcludedWiktionaryCitationTemplate(example)) return;
+
+            var exampleText = example.textContent.trim();
+            result += '    - ' + exampleText + '\n';
         });
         
         index++;
@@ -158,7 +206,7 @@ document.addEventListener('copy', function(event) {
     if (window.location.hostname === 'www.ravmilim.com') {
         ravMilimParser_v2();
     } else if (window.location.hostname === 'hebrew-academy.org.il') {
-        hebrewAcademyParser();
+        if (!hebrewAcademyParser()) return;
     } else if (window.location.hostname === 'milog.co.il') {
         milogParser();
     } else if (window.location.hostname === 'he.wiktionary.org') {
