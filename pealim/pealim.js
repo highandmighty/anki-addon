@@ -199,10 +199,9 @@ function pealim() {
 	}
 
 	target.before(...pars);
-	navigator.clipboard.writeText(
-		// pars.map(p => p.innerText).join('|')
-		JSON.stringify(texts)
-	);
+	window.dispatchEvent(new CustomEvent("pealim-copy", {
+		detail: JSON.stringify(texts)
+	}));
 }
 
 // Delay Pealim function by 2 seconds
